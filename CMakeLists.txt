@@ -31,11 +31,23 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/src)
 # Specify libraries or flags to use when linking a given target.
 target_link_libraries(${PROJECT_NAME} PRIVATE sfml-system sfml-audio sfml-graphics sfml-network sfml-window)
 
-# Copy assets folder to source to the build directory.
-FILE(COPY ${PROJECT_SOURCE_DIR}/assets DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+# Define custom target to copy files/folders at runtime.
+add_custom_target(copy_assets
+    # Remove assets folder in case files have been modified, -E doesn't overwrite.
+    COMMAND ${CMAKE_COMMAND} -E remove_directory
+            ${CMAKE_CURRENT_BINARY_DIR}/assets
 
-# Copy openal32.dll to source to the build directory. SFML doesn't provide it as a static lib.
-FILE(COPY ${PROJECT_SOURCE_DIR}/libs/sfml/extlibs/bin/x64/openal32.dll DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${PROJECT_SOURCE_DIR}/assets
+            ${CMAKE_CURRENT_BINARY_DIR}/assets
+
+    COMMAND ${CMAKE_COMMAND} -E copy
+            ${PROJECT_SOURCE_DIR}/libs/sfml/extlibs/bin/x64/openal32.dll
+            ${CMAKE_CURRENT_BINARY_DIR}
+)
+
+# Add dependency to ensure files are copied when necessary.
+add_dependencies(${PROJECT_NAME} copy_assets)
 
 # Remove the console window for release mode. 
 if(CMAKE_BUILD_TYPE MATCHES Release)
