@@ -8,10 +8,16 @@ project(SFML_GAME
     LANGUAGES CXX)
 
 # Global flag to cause add_library() to create shared libraries if on.
-set(BUILD_SHARED_LIBS FALSE)
+option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
-#Adds a subdirectory to the build.
-add_subdirectory(libs/sfml)
+include(FetchContent)
+FetchContent_Declare(SFML
+    GIT_REPOSITORY https://github.com/SFML/SFML.git
+    GIT_TAG 2.6.x
+    GIT_SHALLOW ON
+    EXCLUDE_FROM_ALL
+    SYSTEM)
+FetchContent_MakeAvailable(SFML)
 
 # File manipulation command. (Automatically checks and finds all source files at build time)
 file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS "src/*.cpp")
@@ -41,8 +47,9 @@ add_custom_target(copy_assets
             ${PROJECT_SOURCE_DIR}/assets
             ${CMAKE_CURRENT_BINARY_DIR}/assets
 
-    COMMAND ${CMAKE_COMMAND} -E copy
-            ${PROJECT_SOURCE_DIR}/libs/sfml/extlibs/bin/x64/openal32.dll
+    # Copy OpenAL DLL to the output directory.
+    COMMAND ${CMAKE_COMMAND} -E copy 
+            ${SFML_SOURCE_DIR}/extlibs/bin/x64/openal32.dll
             ${CMAKE_CURRENT_BINARY_DIR}
 )
 
