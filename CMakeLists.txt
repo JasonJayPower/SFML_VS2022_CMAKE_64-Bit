@@ -50,7 +50,7 @@ add_custom_target(copy_assets
 add_dependencies(${PROJECT_NAME} copy_assets)
 
 # Remove the console window for release mode. 
-if(CMAKE_BUILD_TYPE MATCHES Release)
-    set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
-    message("Release Mode")
-ENDIF(CMAKE_BUILD_TYPE MATCHES Release)
+#if(CMAKE_BUILD_TYPE MATCHES Release)
+#    set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
+#    message("Release Mode")
+#ENDIF(CMAKE_BUILD_TYPE MATCHES Release)
